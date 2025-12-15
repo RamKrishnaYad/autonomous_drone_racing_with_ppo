@@ -1,0 +1,180 @@
+<mujoco model="quadrotor_racing">
+    <compiler angle="degree" coordinate="local" inertiafromgeom="true"/>
+    <option timestep="0.01" gravity="0 0 -9.81" integrator="RK4"/>
+
+    <visual>
+        <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+        <rgba haze="0.15 0.25 0.35 1"/>
+        <global azimuth="120" elevation="-20"/>
+    </visual>
+
+    <asset>
+        <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+        <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300"/>
+        <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+        <material name="gate_mat" rgba="1 0.6 0 1" reflectance="0.5" shininess="0.5"/>
+        <material name="pole_mat" rgba="0.5 0.5 0.5 1" reflectance="0.2"/>
+        <material name="drone_mat" rgba="0.1 0.1 0.1 1" reflectance="0.8" shininess="0.8"/>
+        <material name="prop_mat" rgba="0 1 1 0.3"/>
+    </asset>
+
+    <default>
+        <geom type="box" condim="6" friction="0.8 0.1 0.1"/>
+        <default class="visual">
+            <geom type="mesh" mass="0" contype="0" conaffinity="0" group="2"/>
+        </default>
+        <default class="gate_col">
+             <!-- Thinner collision capsules to prevent "invisible wall" hits -->
+             <geom type="capsule" size="0.03" material="gate_mat" condim="1"/>
+        </default>
+        <default class="pole">
+            <geom type="cylinder" size="0.02" material="pole_mat" condim="1"/>
+        </default>
+    </default>
+
+    <worldbody>
+        <light pos="0 0 5" dir="0 0 -1" directional="true"/>
+        <geom name="floor" type="plane" pos="0 0 0" size="20 20 0.1" material="groundplane"/>
+
+        <!-- ================= OCTAGONAL GATES ================= -->
+        <!-- Each gate is built from 8 capsules forming a ring -->
+        
+        <!-- Gate 1 (2.0, 0.0) -->
+        <body name="gate1" pos="2.0 0.0 1.5">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/> <!-- Top -->
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/> <!-- Bottom -->
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/> <!-- Right -->
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/> <!-- Left -->
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/> <!-- TR -->
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/> <!-- TL -->
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/> <!-- BR -->
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/> <!-- BL -->
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- Gate 2 (2.0, 2.0) -->
+        <body name="gate2" pos="2.0 2.0 1.5">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/>
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/>
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- Gate 3 (0.0, 2.0) - Rotated 90 -->
+        <body name="gate3" pos="0.0 2.0 1.5" euler="0 0 90">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/>
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/>
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- Gate 4 (-2.0, 2.0) - Rotated 90 -->
+        <body name="gate4" pos="-2.0 2.0 1.5" euler="0 0 90">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/>
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/>
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- Gate 5 (-2.0, 0.0) -->
+        <body name="gate5" pos="-2.0 0.0 1.5">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/>
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/>
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- Gate 6 (-2.0, -2.0) -->
+        <body name="gate6" pos="-2.0 -2.0 1.5">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/>
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/>
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- Gate 7 (0.0, -2.0) - Rotated 90 -->
+        <body name="gate7" pos="0.0 -2.0 1.5" euler="0 0 90">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/>
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/>
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- Gate 8 (2.0, -2.0) - Rotated 90 -->
+        <body name="gate8" pos="2.0 -2.0 1.5" euler="0 0 90">
+            <geom class="gate_col" fromto="0.2 0 0.5   -0.2 0 0.5"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  -0.2 0 -0.5"/>
+            <geom class="gate_col" fromto="0.5 0 0.2   0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.5 0 0.2  -0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="0.2 0 0.5   0.5 0 0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 0.5  -0.5 0 0.2"/>
+            <geom class="gate_col" fromto="0.2 0 -0.5  0.5 0 -0.2"/>
+            <geom class="gate_col" fromto="-0.2 0 -0.5 -0.5 0 -0.2"/>
+            <geom class="pole" fromto="0.5 0 -0.2  0.5 0 -1.5"/>
+            <geom class="pole" fromto="-0.5 0 -0.2 -0.5 0 -1.5"/>
+        </body>
+
+        <!-- ================= DRONE ================= -->
+        <body name="quad" pos="0 0 1.0"> 
+            <freejoint name="root"/>
+            <geom name="body" type="box" size="0.10 0.10 0.03" density="250" rgba="0 0 0 0"/>
+
+            <body name="visuals">
+                <geom type="ellipsoid" size="0.06 0.06 0.03" rgba="0.1 0.1 0.1 1" mass="0" contype="0" conaffinity="0"/>
+                <geom type="box" size="0.03 0.02 0.015" pos="0.05 0 0" rgba="0 1 0 0.5" mass="0" contype="0" conaffinity="0"/> 
+                
+                <geom type="capsule" fromto="0 0 0  0.10 0.10 0" size="0.01" material="drone_mat" mass="0" contype="0" conaffinity="0"/>
+                <geom type="capsule" fromto="0 0 0  0.10 -0.10 0" size="0.01" material="drone_mat" mass="0" contype="0" conaffinity="0"/>
+                <geom type="capsule" fromto="0 0 0 -0.10 -0.10 0" size="0.01" material="drone_mat" mass="0" contype="0" conaffinity="0"/>
+                <geom type="capsule" fromto="0 0 0 -0.10 0.10 0" size="0.01" material="drone_mat" mass="0" contype="0" conaffinity="0"/>
+
+                <geom type="cylinder" pos="0.10 0.10 0.02" size="0.08 0.001" material="prop_mat" mass="0" contype="0" conaffinity="0"/>
+                <geom type="cylinder" pos="0.10 -0.10 0.02" size="0.08 0.001" material="prop_mat" mass="0" contype="0" conaffinity="0"/>
+                <geom type="cylinder" pos="-0.10 -0.10 0.02" size="0.08 0.001" material="prop_mat" mass="0" contype="0" conaffinity="0"/>
+                <geom type="cylinder" pos="-0.10 0.10 0.02" size="0.08 0.001" material="prop_mat" mass="0" contype="0" conaffinity="0"/>
+            </body>
+
+            <site name="rotor1" pos=" 0.14  0.14  0.02" size="0.001" rgba="0 0 0 0"/>
+            <site name="rotor2" pos=" 0.14 -0.14  0.02" size="0.001" rgba="0 0 0 0"/>
+            <site name="rotor3" pos="-0.14 -0.14  0.02" size="0.001" rgba="0 0 0 0"/>
+            <site name="rotor4" pos="-0.14  0.14  0.02" size="0.001" rgba="0 0 0 0"/>
+        </body>
+    </worldbody>
+</mujoco>
