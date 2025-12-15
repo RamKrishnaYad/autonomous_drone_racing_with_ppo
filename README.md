@@ -20,7 +20,7 @@ Dynamics Interface: "LQR-style" mixer layer bridging abstract neural net actions
 
 # Installation
 
-This project requires Python 3.8+ and MuJoCo. We recommend using Conda to manage dependencies.
+This project requires Python 3.8+ and MuJoCo.
 
 1. Clone the Repository
 
